@@ -51,6 +51,9 @@ The `&` selector references the parent context natively. Combined with `@layer`,
 | **CSS Modules / Scoped (2023)** | Isolation via bundler-generated hashes. | Fair. Obfuscated classes hinder browser DevTools debugging. | Moderate. Tightly coupled to JS bundler pipeline. |
 | **Layers + Nesting (2026)** | Deterministic `@layer` resolution. Browser handles conflict, not selector length. | Excellent. Semantic HTML with concise classes (`.card`, `.title`). | Exceptional. Safe modification without preprocessors or bundlers. |
 
+⚠️ **Anti-pattern: BEM in new codebases**
+Do NOT use BEM naming in greenfield projects. `@layer` + native nesting provide the same specificity control without polluting the DOM. BEM is acceptable only in legacy codebases where a full migration to `@layer` is not feasible.
+
 ### :has() — Relational Selector
 
 The `:has()` pseudo-class applies styles to a parent based on descendant state. It removes JS for upward visual mutations.
@@ -63,6 +66,9 @@ The `:has()` pseudo-class applies styles to a parent based on descendant state. 
 }
 ```
 
+⚠️ **Anti-pattern: :has() for layout decisions**
+Do NOT use `:has()` to decide macro layout (e.g., `.sidebar:has(.active)` to change grid areas). `:has()` is for visual state reactions on micro-interactions. Macro layout must be governed by `@container` or parent grid.
+
 ### Paradigm Verdict
 
 | Paradigm | Visual/Structural Coupling | Parse Performance | Framework-Agnostic Verdict |
@@ -70,6 +76,16 @@ The `:has()` pseudo-class applies styles to a parent based on descendant state. 
 | **CSS-in-JS (Styled Components)** | Absolute coupling. Style lives in JS thread only. | Poor. Blocks main thread, increases TBT. | **Prohibited.** Incompatible with static rendering and agnostic architecture. |
 | **Utility-First (Tailwind v4.2)** | High. DOM is the sole visual source of truth. Requires mapping hundreds of classes per component. | High. Static CSS pre-generated via native compilation. | **Desaconsejado.** Transferring a design to a frontend architect forces token visual noise into component logic. |
 | **Semantic CSS (Token System)** | Total decoupling. HTML describes content (`<article class="card">`); CSS governs display. | Optimal. Static CSS files, CDN-cacheable, parallelizable. | **Mandatory Standard.** Enables AI agents to generate stable interfaces that JS developers consume without friction. |
+
+**Decision Tree: Which CSS paradigm?**
+
+```
+if component is reusable across projects → Semantic CSS (Token System)
+if component is one-off and time-critical → Utility-First (acceptable tradeoff)
+if runtime JS bundle size is constrained → NEVER CSS-in-JS
+if SSR or SSG is required → NEVER CSS-in-JS
+if static build with zero JS dependency is required → Semantic CSS only
+```
 
 ---
 
@@ -98,6 +114,19 @@ Tokenization uses a relational semantic graph. Theme reassignment happens withou
 
 **Verdict**: OKLCH is mandatory. HEX, RGB, and HSL are prohibited for base specifications.
 
+⚠️ **Anti-pattern: OKLCH for legacy system integration**
+Do NOT retroactively convert an entire legacy codebase from HEX to OKLCH in one PR. The migration must be incremental: new components use OKLCH; existing components are migrated when touched. Maintain a `legacy-colors.css` shim if needed.
+
+**Decision Tree: Which token tier to use?**
+
+```
+if defining raw color / space / font-family → Tier 1 (Primitive: --p-)
+if assigning meaning to a primitive (background, text, border) → Tier 2 (Semantic: --s-)
+if component needs local override without affecting system → Tier 3 (Component: --c-)
+if the value never changes between light/dark modes → Tier 1 (Primitive)
+if the value must flip between light/dark modes → Tier 2 (Semantic) using light-dark()
+```
+
 ### Fluid Typography
 
 Reject viewport-based breakpoints. Use `clamp()` with container query inline units (`cqi`).
@@ -107,6 +136,9 @@ font-size: clamp(1rem, 0.8rem + 1.5cqi, 1.5rem);
 ```
 
 Using `cqi` instead of `vw` ensures a component (e.g., a card) reduces its typography appropriately when confined in a narrow column, even if the global browser viewport is extremely wide.
+
+⚠️ **Anti-pattern: vw for component-internal typography**
+Do NOT use `vw` for text inside components. `1vw` on a 4K monitor produces unreadably large text inside a narrow sidebar card. Always use `cqi` for component-internal fluid typography.
 
 ### Spacing Grid
 
@@ -120,6 +152,9 @@ Injected via primitive tokens:
 --p-space-16: 1rem;
 --p-space-24: 1.5rem;
 ```
+
+⚠️ **Anti-pattern: Arbitrary spacing values**
+Do NOT use values like `7px`, `13px`, or `23px`. These desynchronize the vertical rhythm and cause sub-pixel blur on low-DPI screens. Round to the nearest 4px or 8px multiple.
 
 ### Dark Mode First
 
@@ -142,16 +177,33 @@ Every component decomposes into **five structural responsibilities**:
 | Component | Key Rule |
 |-----------|----------|
 | **Card** | `container-type: inline-size` mandatory. No external margins. Images use strict `aspect-ratio` + `object-fit: cover`. |
-| **Modal** | Use `<dialog>` + `showModal()`. Backdrop via `::backdrop`. `overscroll-behavior: contain`. |
-| **Table** | `<table>` structure with `scope`. Complex layouts: `display: grid` + `subgrid` on rows. |
+| **Modal** | Use `\u003cdialog\u003e` + `showModal()`. Backdrop via `::backdrop`. `overscroll-behavior: contain`. |
+| **Table** | `\u003ctable\u003e` structure with `scope`. Complex layouts: `display: grid` + `subgrid` on rows. |
 | **Form** | `:user-valid` / `:user-invalid` (post-interaction only). Error expansion: `grid-template-rows: 0fr` transition. |
-| **Nav** | `<nav>` + lists. Sticky: `position: sticky`. Scroll animation: `animation-timeline: scroll()`. |
+| **Nav** | `\u003cnav\u003e` + lists. Sticky: `position: sticky`. Scroll animation: `animation-timeline: scroll()`. |
 | **Hero** | `min-height: 100svh`. CSS mesh gradients only. |
 | **Feature-Grid** | Bento: `repeat(12, 1fr)` + named `grid-template-areas`. Hero tiles span 4–6 cols; metrics span 2×1 or 2×2. |
+
+⚠️ **Anti-pattern: External margins on components**
+Do NOT declare `margin` on component root elements (e.g., `.card { margin: 16px; }`). Margins are a **parent responsibility** imposed by the macro layout grid (`gap`). Components must be spatially ignorant — they adapt to whatever container they are placed in.
+
+⚠️ **Anti-pattern: Missing container-type on cards**
+Do NOT omit `container-type: inline-size` on card components. Without it, internal `@container` queries fail silently, and fluid typography inside the card collapses to global viewport dimensions instead of card dimensions.
 
 ### Philosophy Shift
 
 **Mobile-First and Desktop-First are obsolete.** Replaced by **Component-First**: spatial reconfigurations respond to the component's own internal content stress via `@container`, not the global device viewport.
+
+**Decision Tree: Which layout primitive?**
+
+```
+if one-dimensional flow (row or column) → Flexbox
+if two-dimensional grid (rows + columns) → CSS Grid
+if nested component must inherit parent tracks → Subgrid
+if component must adapt its own internals → @container
+if macro page layout (header, sidebar, main, footer) → CSS Grid + @media (acceptable exception)
+if aligning items of unknown/dynamic size → Flexbox
+```
 
 ---
 
@@ -183,6 +235,18 @@ This prevents structural errors by AI agents and enables immediate human code au
 - Breakpoints must be content-based, not device-based. Use `minmax()` and `ch` units to enforce optimal reading width (60–75ch max).
 - `content-visibility: auto;` with `contain-intrinsic-size` defers layout and paint calculations for below-the-fold sections.
 
+⚠️ **Anti-pattern: Device-based breakpoints for component internals**
+Do NOT use `@media (min-width: 768px)` to change the internal layout of a card, modal, or form component. `@media` is acceptable only for macro page structure (sidebar collapse, grid reconfiguration at page level). Component internals MUST use `@container`.
+
+**Decision Tree: When is @media acceptable?**
+
+```
+if adjusting macro page layout (sidebar, main area, footer grid) → @media acceptable
+if adjusting internal component layout (card columns, modal width, form fields) → @container mandatory
+if the change affects typography inside a component → @container with cqi
+if the change is purely decorative (padding on ultra-wide) → @media acceptable
+```
+
 ---
 
 ## 5. Accessibility (WCAG 2.2 + EAA 2025)
@@ -212,16 +276,34 @@ WCAG 2.2 criteria 2.4.11 and 2.4.13 dictate: minimum 2px CSS border perimeter; c
 
 Prohibited: `outline: 1px dotted`, faint blurred shadows.
 
+⚠️ **Anti-pattern: Color-only focus indicators**
+Do NOT rely solely on `box-shadow` or `background-color` changes for focus. Users with low vision or color blindness may miss them. The 2px solid outline with offset is the only guaranteed perceptible indicator.
+
 ### Touch Targets & Reduced Motion
 
 - **Touch target**: 44×44 px minimum for primary buttons (exceeds WCAG 2.2 AA 24×24 px).
 - `@media (prefers-reduced-motion: reduce)` is mandatory. Neutralize scale/parallax animations instantly or fade only.
 
+⚠️ **Anti-pattern: Static reduced-motion disable**
+Do NOT simply set `animation: none` under `prefers-reduced-motion`. This can break layout if elements rely on animated visibility. Use instant transitions (0ms) or opacity fades only.
+
 ### ARIA Rule
 
-> "The best ARIA practice is to not use ARIA unless critically necessary."
+> "The best ARIA practice is to use native HTML elements instead of ARIA whenever possible."
 
 Default to native interactive elements: `<button>`, `<dialog>`, `<nav>`, `<fieldset>`, `<details>`. `role="button"` on `<div>` elements is prohibited unless strictly managed by the frontend architect for asynchronous semantic control.
+
+⚠️ **Anti-pattern: ARIA on static elements**
+Do NOT add `role="presentation"` or `aria-hidden="true"` to focusable elements. This removes them from the accessibility tree while keeping them in the tab order, creating keyboard traps.
+
+**Decision Tree: Do I need ARIA?**
+
+```
+if native HTML element exists for the purpose → Use native element; NO ARIA needed
+if custom widget requires keyboard interaction → Add ARIA roles + keyboard handlers
+if hiding decorative element from screen readers → aria-hidden="true" (only if unfocusable)
+if element is visible but not interactive → No role needed
+```
 
 ---
 
@@ -235,12 +317,18 @@ Prefer declarative `transition` and `@keyframes`. WAAPI is reserved for imperati
 
 Apply animations exclusively to `transform` and `opacity`. **Strictly prohibited during state transitions**: `width`, `height`, `margin`, `top`, `left` — these trigger Layout Reflow and Paint, destroying 60fps consistency.
 
+⚠️ **Anti-pattern: Animate layout-triggering properties**
+Do NOT animate `width`, `height`, `margin`, `top`, or `left` during state transitions. If a card must expand, animate `transform: scale()` or use `grid-template-rows: 0fr → 1fr` for height expansion without reflow.
+
 ### Scroll-Driven Animations
 
 | Context | Property | Architectural Use |
 |---------|----------|-------------------|
 | **Root scroll** | `animation-timeline: scroll();` | Shrink sticky headers, global reading progress bar (0% → 100%). |
 | **Component intersection** | `animation-timeline: view();` | Staggered card reveals as they enter viewport. Combine with `animation-range: entry 0% entry 100%`. |
+
+⚠️ **Anti-pattern: IntersectionObserver for decorative visuals**
+Do NOT use `IntersectionObserver` or scroll event listeners for purely decorative visual effects (parallax, fade-in reveals). These execute on the main thread and increase TBT. Use `animation-timeline: view()` instead.
 
 ### Hover Without :hover
 
@@ -254,9 +342,25 @@ Wrap hover styles inside `@media (hover: hover) and (pointer: fine)` to prevent 
 }
 ```
 
+⚠️ **Anti-pattern: :hover without media query guard**
+Do NOT declare `.btn:hover` without `@media (hover: hover)` guard. On touch devices, the hover state "sticks" after tap, leaving buttons visually highlighted incorrectly.
+
 ### Skeleton Screens & State Attributes
 
 Async states use `data-state="loading"`. Skeleton screens use animated `linear-gradient` via `background-position` shift, consuming the base background token and a contrast token.
+
+⚠️ **Anti-pattern: Skeleton with random shimmer colors**
+Do NOT use arbitrary gray colors for skeleton shimmer. Derive the shimmer gradient from the design tokens: base background → muted text color → base background. This ensures skeletons do not violate dark mode.
+
+**Decision Tree: Which animation strategy?**
+
+```
+if triggered by user interaction (click, hover) → CSS transition on transform/opacity
+if triggered by scroll position (reveal, parallax) → animation-timeline: scroll() / view()
+if complex orchestration with dynamic values → WAAPI (JS-controlled, not CSS)
+if element enters/exits DOM (mount/unmount) → transition + opacity + transform
+if loading state placeholder → Skeleton with linear-gradient animation (CSS only)
+```
 
 ---
 
@@ -270,6 +374,22 @@ Async states use `data-state="loading"`. Skeleton screens use animated `linear-g
 | **Bold Typography** | **Standard.** High weight contrast between display and body text. Variable font weight axes exploited for hierarchy without extra file requests. |
 | **Dark Mode First** | **Standard.** All palettes designed for dark environment first; `light-dark()` lifts to light mode. Reduces eye strain and OLED energy consumption. |
 | **Mesh / Aurora Gradients** | **CSS-only.** Stack multiple `radial-gradient` declarations in `background-image` using OKLCH colors. Blend with `mix-blend-mode`. Optional SVG noise texture overlay. No WebGL/Canvas JS. |
+
+⚠️ **Anti-pattern: Glassmorphism over text content**
+Do NOT apply glassmorphism (`backdrop-filter: blur`) over paragraphs or reading text. The blur reduces legibility and violates WCAG 2.2 contrast requirements. Glassmorphism is for overlays, navbars, and menus only.
+
+⚠️ **Anti-pattern: Neumorphism in any form**
+Do NOT use neumorphism (extruded shadows, dual opposing highlights) under any circumstances. It is not merely "outdated" — it actively violates EAA 2025 contrast thresholds and destroys shape recognition for visually impaired users.
+
+**Decision Tree: Which visual trend applies?**
+
+```
+if building dashboard with metrics of varying importance → Bento Grid (mandatory)
+if overlay above content needs depth (modal, menu, sticky nav) → Glassmorphism (focalized)
+if decorative background for hero or landing page → Mesh / Aurora Gradients (CSS-only)
+if dark mode is expected by users → Dark Mode First (design dark first; light-dark() lifts)
+if legacy system uses neumorphism → Remove immediately; refactor to flat + shadow tokens
+```
 
 ---
 
@@ -295,9 +415,21 @@ Load fonts asynchronously. Compensate FOUT/FOIT with `font-size-adjust`. Declare
 | **AVIF** | ~93.8% browser / ~1.3% real delivery | Static assets only (logos, UI graphics). ~50% smaller than JPEG, but encode is slow (~1–2s). |
 | **JPEG XL** | <0.1% | Prohibited for direct client interfaces. Insufficient WebKit/iOS support despite superior compression. |
 
-### Variable Fonts
+⚠️ **Anti-pattern: AVIF for user-generated thumbnails**
+Do NOT encode user-uploaded images to AVIF on-the-fly. The encode time (~1–2s per image) blocks the upload pipeline and degrades UX. Use WebP for dynamic content; reserve AVIF for static assets generated at build time.
 
-Use a single variable font file with weight/width/slant axes instead of multiple static files. Reduces HTTP requests and enables fluid weight interpolation for responsive hierarchy.
+⚠️ **Anti-pattern: will-change left permanently**
+Do NOT leave `will-change: transform` on elements indefinitely. It promotes the element to a GPU layer, consuming VRAM. Apply `will-change` 200ms before animation; remove it in the `transitionend` / `animationend` handler.
+
+**Decision Tree: Which performance optimization?**
+
+```
+if section is below the fold (not in initial viewport) → content-visibility: auto
+if component mutates frequently (animations, resizes) → contain: paint layout
+if animation is about to start (user clicked, scroll triggered) → will-change: transform, opacity (transient)
+if font loading causes layout shift → font-size-adjust + system-ui fallback
+if image format must be chosen → WebP for dynamic, AVIF for static build, JPEG XL prohibited
+```
 
 ---
 
@@ -309,6 +441,21 @@ Launched April 2026 by Google Labs. Replaces Figma handoff with a deterministic,
 - **Markdown Prose**: Narrative rules for LLMs. Explains *why* and *when* to invoke the YAML tokens. Example: "The destructive error palette is implemented on modals and notifications only; never on passive interactive elements like tabs."
 
 **Toolchain**: Design traced in Figma/Google Stitch → auto-generate `design.md` → Claude Code consumes via MCP → deterministic component generation without per-request contrast micromanagement.
+
+⚠️ **Anti-pattern: Design.md without narrative rules**
+Do NOT emit a `design.md` with only YAML front matter and no Markdown prose. The YAML declares *what* the tokens are; the prose explains *when* and *why* to invoke them. Without prose, an AI agent will apply tokens indiscriminately (e.g., using the destructive error palette on passive tabs).
+
+⚠️ **Anti-pattern: Copying Design.md between projects without adaptation**
+Do NOT copy a `design.md` verbatim from one project to another. Every project has unique brand hues, spacing scales, and accessibility constraints. Adapt the primitives; keep the prose structure.
+
+**Decision Tree: Should I create a Design.md?**
+
+```
+if project has ≥3 developers touching CSS → Yes: Design.md prevents token drift
+if project uses AI agents for component generation → Yes: Design.md is the MCP contract
+if project is a single-page prototype with <5 components → No: inline tokens suffice
+if project already has a living design system (Figma tokens exported) → Yes: auto-generate from Figma
+```
 
 ---
 
@@ -429,22 +576,69 @@ Production-ready HTML5 + CSS consolidating `@layer`, three-tier tokens, `light-d
 
 ---
 
-## 11. Architectural Dictates
+## 11. Decision Framework
 
-**1. Absolute Structural Independence**  
-No component shall declare external geometric coordinates (e.g., `margin-left`) or assume its dimensions in the parent canvas. Every component is a spatially ignorant module. Its final topological adaptation is subordinated to the macro-container (`display: grid` with `gap`) or its own self-referencing local queries (`@container`).
+A 10-step decision tree for frontend visual layer design. Each step resolves a binary choice that narrows the applicable rule set.
 
-**2. Total Rejection of Global Device Viewports**  
-The conditional use of physical screen dimensions (`@media (min-width: 1024px)`) is strictly prohibited for determining internal component metric, typographic, or interface recompositions. All responsive transitions respond to geometric stress dictated by `@container`, enforcing an irreducible Component-First philosophy.
+```
+Step 1: Is this a reusable component or a one-off?
+  → Reusable → container-type: inline-size; NO external margins; @container for internals
+  → One-off → Document context; margins acceptable if parent grid does not govern
 
-**3. Perceptual Prohibition of Legacy Color Formats**  
-All base, mathematical, and visual color specifications universally ban RGB, RGBA, HEX, and HSL. Primary matrices are parameterized mandatorily with OKLCH, using CSS relative color functions (`oklch(from var(--x) calc(l) c h)`) for dynamic alterations and shadow calculations.
+Step 2: Does the component need internal spatial reconfiguration?
+  → Yes → @container query (Component-First)
+  → No → Fixed layout; parent grid governs placement
 
-**4. Visual Compliance with EAA 2025 (Touch & Focus)**  
-To prevent European legal infringement: every keyboard focus ring must have an immutable 2px CSS thickness backed by >3:1 contrast. Every primary transient button must have a hidden capacitive touch target achieving 44×44 px (exceeding WCAG 2.2 24×24 px).
+Step 3: Is this a macro page layout or internal component layout?
+  → Macro page (header, sidebar, footer) → CSS Grid + @media acceptable
+  → Internal component (card, modal, form) → @container mandatory; @media prohibited
 
-**5. Zero Main-Thread Execution for Visual Scroll Orchestration**  
-The invocation of imperative JavaScript (`IntersectionObserver`, scroll event listeners) for purely decorative visual positioning or parallax is formally prohibited. All interactive scroll or parallax manipulation uses declarative compositor APIs (`animation-timeline: view();`, `scroll()`), guaranteeing 60fps and zero TBT overhead.
+Step 4: Are you defining a color for the design system?
+  → Yes (primitive token) → OKLCH only; ban HEX/RGB/HSL in --p-* variables
+  → No (semantic/component token) → Reference primitive; use light-dark() for dual-mode
+
+Step 5: Does the value change between light and dark modes?
+  → Yes → Tier 2 Semantic token with light-dark()
+  → No → Tier 1 Primitive token (static across modes)
+
+Step 6: Is the element interactive or passive reading?
+  → Interactive (button, link, input) → 44×44 touch target; 2px focus; 3:1 adjacent contrast
+  → Passive reading (paragraph, heading) → 4.5:1 contrast; 60–75ch line width
+
+Step 7: Does the component need animation?
+  → User-triggered (hover, click) → CSS transition on transform/opacity only
+  → Scroll-triggered (reveal, parallax) → animation-timeline: scroll() / view()
+  → Complex dynamic orchestration → WAAPI (JS); CSS declarations stay declarative
+  → Loading state → Skeleton with linear-gradient animation (CSS only)
+
+Step 8: Is the animation purely decorative or structural?
+  → Decorative (parallax, reveal) → MUST use animation-timeline; NO IntersectionObserver
+  → Structural (dropdown expand, accordion) → grid-template-rows: 0fr → 1fr transition
+
+Step 9: Is the content below the fold (outside initial viewport)?
+  → Yes → content-visibility: auto; contain-intrinsic-size for space reservation
+  → No (above the fold) → Standard rendering; no deferral needed
+
+Step 10: Are you choosing an image format?
+  → User-generated / dynamic content → WebP (fast encode, broad support)
+  → Static UI asset (logo, icon) → AVIF (superior compression; encode at build time)
+  → Client-facing delivery → JPEG XL prohibited (insufficient WebKit/iOS support)
+```
+
+### Quick Reference: Verdict by Context
+
+| Context | Rule |
+|---------|------|
+| Reusable card | `container-type: inline-size`; no margin; `@container` for internals |
+| One-off landing hero | Contextual margins acceptable; macro `@media` for layout |
+| Color token | OKLCH; no HEX/RGB/HSL in primitives |
+| Interactive element | 44×44 px; 2px outline; 3:1 adjacent contrast |
+| Scroll animation | `animation-timeline`; never `IntersectionObserver` for decoration |
+| Below-the-fold section | `content-visibility: auto` + `contain-intrinsic-size` |
+| Dynamic image | WebP; AVIF only for build-time static assets |
+
+⚠️ **Anti-pattern: Applying the framework to framework decisions**
+This Decision Framework governs **visual layer design only** (CSS, tokens, layout, animation). It does NOT choose between React, Vue, Svelte, or Angular. Framework selection is the domain of `frontend-architect`. Do NOT extend this tree with framework branches.
 
 ---
 
