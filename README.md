@@ -22,10 +22,10 @@ Built from a 496-line research document analyzing the 2025–2026 frontend ecosy
 
 | Version | File | Size | When to Use |
 |---------|------|------|-------------|
-| **v1.0** (Current) | [`versions/v1.0/SKILL.md`](versions/v1.0/SKILL.md) | ~484 lines | Full reference: CSS layers, OKLCH tokens, component patterns, accessibility, Design.md |
+| **v1.0** (Current) | [`versions/v1.0/SKILL.md`](versions/v1.0/SKILL.md) | ~678 lines | Full reference with anti-patterns, decision trees, 10-step Decision Framework, OKLCH tokens, accessibility |
 | **v1.0-lite** | [`versions/v1.0-lite/SKILL.md`](versions/v1.0-lite/SKILL.md) | ~352 lines | Condensed for CI ingestion, rapid kickoffs, under time pressure |
-| **v2.0** (Planned) | `versions/v2.0/SKILL.md` | ~500 lines | Coming: anti-pattern blocks, decision trees, Decision Framework, expanded performance |
-| **v2.0-lite** (Planned) | `versions/v2.0-lite/SKILL.md` | ~350 lines | Coming: condensed v2.0 with decision trees stripped to essentials |
+| **v2.0** (Planned) | `versions/v2.0/SKILL.md` | ~500 lines | Coming: expanded performance section, CSS anchor positioning, @property, style queries |
+| **v2.0-lite** (Planned) | `versions/v2.0-lite/SKILL.md` | ~350 lines | Coming: condensed v2.0 with new CSS features stripped to essentials |
 
 ### Planned for v2.0
 
