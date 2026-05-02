@@ -22,10 +22,22 @@ Built from a 496-line research document analyzing the 2025–2026 frontend ecosy
 
 | Version | File | Size | When to Use |
 |---------|------|------|-------------|
-| **v1.0** (Full) | [`versions/v1.0/SKILL.md`](versions/v1.0/SKILL.md) | ~400 lines | Senior designers, detailed token systems, full snippet reference, deep accessibility rules |
-| **v1.0-lite** | [`versions/v1.0-lite/SKILL.md`](versions/v1.0-lite/SKILL.md) | ~270 lines | Rapid kickoffs, MVP decisions, CI/CD ingestion, under time pressure |
+| **v1.0** (Current) | [`versions/v1.0/SKILL.md`](versions/v1.0/SKILL.md) | ~484 lines | Full reference: CSS layers, OKLCH tokens, component patterns, accessibility, Design.md |
+| **v1.0-lite** | [`versions/v1.0-lite/SKILL.md`](versions/v1.0-lite/SKILL.md) | ~352 lines | Condensed for CI ingestion, rapid kickoffs, under time pressure |
+| **v2.0** (Planned) | `versions/v2.0/SKILL.md` | ~500 lines | Coming: anti-pattern blocks, decision trees, Decision Framework, expanded performance |
+| **v2.0-lite** (Planned) | `versions/v2.0-lite/SKILL.md` | ~350 lines | Coming: condensed v2.0 with decision trees stripped to essentials |
 
-### What's Covered in v1.0
+### Planned for v2.0
+
+- ⚠️ Anti-pattern blocks (`⚠️ Anti-pattern:` prefix) in every section
+- 🌳 Decision trees (`if X → Y`) for CSS architecture, token selection, and component choice
+- 📐 Decision Framework (10-step ASCII decision tree) replacing static Architectural Dictates
+- 🎨 Local `design.md` demonstrating Google Labs standard with full token YAML + narrative rules
+- 🔧 `.github/workflows/pr-validation.yml` enforcing issue-first + type-label discipline
+- 📋 `.github/pull_request_template.md` aligned with workspace conventions
+- 🏷️ GitHub Topics (≥15) for discoverability
+
+### What's Covered (v2.0 Scope)
 
 - ✅ **CSS Architecture 2026** — `@layer` cascade layers, native nesting, `:has()`, BEM obsolescence table
 - ✅ **Design Tokens (3-Tier)** — Primitive → Semantic → Component, OKLCH mandatory, fluid typography (`clamp` + `cqi`), 8/4-point spacing
