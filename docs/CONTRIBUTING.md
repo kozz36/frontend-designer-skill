@@ -52,7 +52,7 @@ Every claim about a **browser feature, spec status, or accessibility law** must 
 
 ### Pull Request Workflow (REQUIRED)
 
-This repo follows the **issue-first, PR-mandatory** workflow:
+This repo follows the **issue-first, PR-mandatory** workflow, enforced by `.github/workflows/pr-validation.yml`:
 
 ```
 1. Open an issue describing the change
@@ -60,9 +60,9 @@ This repo follows the **issue-first, PR-mandatory** workflow:
 3. Create branch: `type/description` (e.g., `feat/subgrid-section`, `fix/oklch-syntax`)
 4. Implement changes with conventional commits
 5. Update `docs/CHANGELOG.md`
-6. Open PR with `Closes #N` in body
+6. Open PR with `Closes #N` in body (use `.github/pull_request_template.md` as reference)
 7. Add exactly one `type:*` label
-8. Wait for automated checks to pass
+8. Wait for automated checks to pass (issue linkage + type label validation)
 9. Maintainer merges
 ```
 
