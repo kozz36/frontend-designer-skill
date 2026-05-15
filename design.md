@@ -1,8 +1,8 @@
 ---
 # Design System Specification
-# Framework-Agnostic Design Tokens — Google Labs Design.md Standard
+# Framework-Agnostic Design Tokens — Local design.md Handoff Pattern
 # Generated for: frontend-designer-skill demonstration
-# Reference: https://design.md (Google Labs, April 2026)
+# Reference: local project artifact; not an external standard
 
 name: frontend-designer-demo
 version: "1.0"
@@ -12,8 +12,8 @@ license: Apache-2.0
 
 # Design System: Framework-Agnostic Tokens
 
-> This file demonstrates the Google Labs `Design.md` standard consumed by AI agents (Claude Code, Cursor, Copilot) for deterministic visual layer generation.
-> The frontend-designer-skill auto-loads this file via MCP when triggered by design-token, component-pattern, or accessibility contexts.
+> This file demonstrates a local `design.md` handoff pattern consumed by AI agents (Claude Code, Cursor, Copilot) for deterministic visual layer generation.
+> Agents may read this file when triggered by design-token, component-pattern, or accessibility contexts.
 
 ---
 
