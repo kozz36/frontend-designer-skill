@@ -1,0 +1,32 @@
+name: Validate Derived Lite Runtime
+
+on:
+  pull_request:
+    paths:
+      - 'skills/frontend-designer/**'
+      - 'skills/frontend-designer-lite/**'
+      - 'versions/v3.0.1/**'
+      - 'versions/v3.0.1-lite/**'
+      - 'docs/derivation/**'
+      - 'scripts/validate-derived-lite.sh'
+      - '.github/workflows/validate-derived-lite.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'skills/frontend-designer/**'
+      - 'skills/frontend-designer-lite/**'
+      - 'versions/v3.0.1/**'
+      - 'versions/v3.0.1-lite/**'
+      - 'docs/derivation/**'
+      - 'scripts/validate-derived-lite.sh'
+      - '.github/workflows/validate-derived-lite.yml'
+
+jobs:
+  validate-derived-lite:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate immutable v3.0.1 derivation
+        run: scripts/validate-derived-lite.sh
+      - name: Exercise fail-closed inventory checks
+        run: scripts/validate-derived-lite.sh --self-test

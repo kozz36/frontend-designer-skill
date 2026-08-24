@@ -9,7 +9,7 @@ Framework-agnostic frontend-design skills for UI architecture, tokens, responsiv
 | Skill | Canonical entrypoint | Use |
 |---|---|---|
 | `frontend-designer` | [`skills/frontend-designer/SKILL.md`](skills/frontend-designer/SKILL.md) | Full runtime contract with local decision references. |
-| `frontend-designer-lite` | [`skills/frontend-designer-lite/SKILL.md`](skills/frontend-designer-lite/SKILL.md) | Standalone runtime with inline decision gates, safeguards, and examples. |
+| `frontend-designer-lite` | [`skills/frontend-designer-lite/SKILL.md`](skills/frontend-designer-lite/SKILL.md) | Standalone compacted runtime with inline gates and safeguards. |
 
 Both skills are version `3.0.1`. The full skill's detailed reference material is located beside its canonical entrypoint in [`skills/frontend-designer/references/`](skills/frontend-designer/references/).
 
@@ -38,9 +38,20 @@ The CLI resolves canonical `SKILL.md` entrypoints under `skills/`; do not instal
 - `skills/frontend-designer/SKILL.md` is the compact runtime contract: activation, evidence gates, safeguards, execution steps, and output requirements.
 - `skills/frontend-designer/references/technical-reference.md` contains conditional decision guidance and examples.
 - `skills/frontend-designer/references/source-index.md` contains source pointers and rules for verifying time-sensitive claims.
-- `skills/frontend-designer-lite/SKILL.md` is a standalone runtime that keeps its decision gates, safeguards, and examples inline rather than using a separate reference directory.
+- `skills/frontend-designer-lite/SKILL.md` is a standalone runtime compacted from the current full runtime, technical reference, and source index; it has no lite reference directory.
 
 The guidance is project-agnostic: it gates CSS architecture, naming, color notation, theming, layout, trends, browser features, commands, and migration work on repository evidence rather than prescribing a universal stack.
+
+## Canonical lite derivation
+
+`frontend-designer` is the sole authority for the current full v3.0.1 contract. Derive `frontend-designer-lite` in this order:
+
+1. Freeze the full runtime, technical reference, and source index after current claim verification; inventory their hashes in [`docs/derivation/frontend-designer-lite-v3.0.1.manifest.tsv`](docs/derivation/frontend-designer-lite-v3.0.1.manifest.tsv).
+2. Compact only those three inputs, preserving runtime gates and output obligations while omitting only rationale, examples, snippets, exhaustive tables, and repeated links.
+3. Run [`scripts/validate-derived-lite.sh`](scripts/validate-derived-lite.sh) and its `--self-test` inventory cases before accepting the generated hash and coverage matrix.
+4. Copy the validated lite bytes byte-for-byte to `versions/v3.0.1-lite/ARCHIVE.md` as the non-discoverable archive snapshot.
+
+A prior lite runtime and every `versions/` archive are forbidden derivation inputs. Full and lite must retain the same version. Structural validation does not replace independent semantic review.
 
 ## Archive history
 

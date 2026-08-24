@@ -1,0 +1,17 @@
+# Immutable derivation manifest for frontend-designer-lite v3.0.1.
+# Only SOURCE records are permitted semantic inputs. GENERATED and ARCHIVE records are outputs.
+record	path	sha256	role
+DERIVATION	full-runtime+technical-reference+source-index	-	Compact only the three exact SOURCE records; no prior lite or archive content is an input.
+SOURCE	skills/frontend-designer/SKILL.md	376ac0afa306bb03e6343839f9f1b999e392ca45d3704327ad419fb8caeaebaf	Canonical full v3.0.1 runtime authority.
+SOURCE	skills/frontend-designer/references/technical-reference.md	ed976eadc0a7dfc1a87c69818ec7eeb460fcfa68e48c273e2bc3d45d057ed59f	Canonical full v3.0.1 technical reference authority.
+SOURCE	skills/frontend-designer/references/source-index.md	0a015c0e64f82fe6fa287b722ef0c0eb453456c961f996db69027512925e2608	Canonical full v3.0.1 source-index authority.
+GENERATED	skills/frontend-designer-lite/SKILL.md	450d6a09b1871b127379bc85a46abf0bb7297f5b3a1e52095cd3977f9b3623c8	Derived standalone lite v3.0.1 runtime.
+ARCHIVE	versions/v3.0.1-lite/ARCHIVE.md	450d6a09b1871b127379bc85a46abf0bb7297f5b3a1e52095cd3977f9b3623c8	Non-discoverable byte-identical archive output.
+FORBIDDEN	versions/	-	Archive paths, including historical full and lite snapshots, are never derivation inputs.
+FORBIDDEN	skills/frontend-designer-lite/SKILL.md	-	A prior or pre-existing lite runtime is never a derivation input; this path is output-only.
+OMISSION	Detailed rationale	-	Omitted after retaining its decision rule and guardrail.
+OMISSION	Examples and snippets	-	Omitted; they are not standalone runtime requirements.
+OMISSION	Exhaustive decision tables	-	Compacted into conditional gates without changing decision criteria.
+OMISSION	Repeated source links	-	Compacted into authoritative-source categories and verification record requirements.
+OMISSION	Privacy-specific runtime policy	-	Not added because no privacy-specific contract exists in the three exact authority inputs.
+DISCLAIMER	semantic-proof	-	Hash, anchor, inventory, and archive checks prove structural derivation evidence only; independent review is required for semantic proof.

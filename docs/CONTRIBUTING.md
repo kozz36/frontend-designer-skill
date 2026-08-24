@@ -109,6 +109,18 @@ Original direct-push workflow (DEPRECATED — kept for historical reference):
 3. Update `docs/CHANGELOG.md`
 4. ~~Push to main~~ → **Use PR workflow above**
 
+## Canonical full-to-lite derivation
+
+For the current release family, `skills/frontend-designer/` is the full authority and must be completed first. Do not derive lite from a previous lite runtime, a lite archive, or any `versions/` content.
+
+1. Freeze the canonical full `SKILL.md`, technical reference, and source index only after current version/browser/API/legal/adoption/security claims have authoritative verification.
+2. Inventory the three exact source hashes in `docs/derivation/frontend-designer-lite-v3.0.1.manifest.tsv` and compact only those inputs into the standalone lite runtime.
+3. Preserve activation/exclusions, conditional evidence gates, accessibility and performance safeguards, execution order, and the output contract; omit only rationale, examples, snippets, exhaustive tables, and repeated links.
+4. Validate hashes, anchors, source inventory, install surface, versions, and archive parity with `scripts/validate-derived-lite.sh` plus `--self-test` before accepting the generated hash and coverage matrix.
+5. Archive the accepted lite bytes byte-for-byte as `versions/v3.0.1-lite/ARCHIVE.md`; full and lite remain the same version.
+
+The manifest's structural checks are not semantic proof. Independent review must confirm that the compaction preserves the full runtime contract.
+
 ## Version Policy
 
 - **Patch (x.x.1)** — Corrections, clarifications, link fixes

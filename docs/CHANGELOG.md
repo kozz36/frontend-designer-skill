@@ -15,6 +15,13 @@
 - Made `versions/` archive-only by renaming every historical `SKILL.md` entrypoint to `ARCHIVE.md` without changing historical content.
 - Added non-installable v3.0.1 full and lite archive snapshots that match their canonical current counterparts.
 
+### Derivation correction
+
+- Established `skills/frontend-designer/` plus its technical reference and source index as the sole full v3.0.1 authority; it is frozen and hash-inventoried before lite work begins.
+- Regenerated `frontend-designer-lite` by compacting only those three full-package inputs, preserving conditional gates and output obligations while omitting only rationale, examples, snippets, exhaustive tables, and repeated links.
+- Added a derivation manifest, coverage matrix, validation script, and CI workflow. The validator pins exact SOURCE, GENERATED, FORBIDDEN, and OMISSION inventories and verifies source hashes, anchors, install discovery, version parity, and byte-identical archive output; independent review remains required for semantic proof.
+- Declared all prior lite and `versions/` archive content forbidden as lite inputs, then archived the validated lite bytes at the same `3.0.1` version.
+
 ## [v3.0] - 2026-05-15
 
 ### Added
