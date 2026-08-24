@@ -1,0 +1,45 @@
+# Full-to-lite coverage matrix. compacted/integrated requires both anchors; omitted requires the source anchor and a NOT_APPLICABLE lite anchor.
+id	category	source_path	full_anchor	lite_anchor	disposition
+ACT-001	activation	skills/frontend-designer/SKILL.md	Use this skill for frontend design-system decisions	Use this standalone skill for frontend design-system decisions	compacted
+ACT-002	exclusion	skills/frontend-designer/SKILL.md	Do not use this skill for generic explanation	Do not use it for generic explanation	compacted
+RULE-001	token-state	skills/frontend-designer/SKILL.md	Preserve the repository's token and component-state contracts	Preserve repository token and component-state contracts	compacted
+A11Y-001	accessibility	skills/frontend-designer/SKILL.md	Use semantic HTML and native controls before ARIA substitutes.	Use semantic HTML and native controls before ARIA substitutes.	compacted
+PERF-001	performance	skills/frontend-designer/SKILL.md	Keep responsive components reusable	Keep components reusable and responsive	compacted
+VERIFY-001	live-verification	skills/frontend-designer/SKILL.md	Verify new version, browser, API, legal, or adoption claims	Do not add version, browser, API, accessibility-law, security, adoption, or legal-applicability claims	compacted
+GATE-001	repository-css	skills/frontend-designer/SKILL.md	Repository-native CSS architecture	Repository architecture and migration	compacted
+GATE-002	design-source	skills/frontend-designer/SKILL.md	Existing `Design.md`, `design.md`, design-token source	Design source	compacted
+GATE-003	browser-api	skills/frontend-designer/SKILL.md	Supported browser matrix and fallback policy	Browser and fallback policy	compacted
+GATE-004	tokens-oklch	skills/frontend-designer/SKILL.md	Approved token contract plus browser/build support	Tokens, color, and themes	compacted
+GATE-005	themes	skills/frontend-designer/SKILL.md	Product theme requirements and design source	Use dark-mode-first only when product requirements	compacted
+GATE-006	layout	skills/frontend-designer/SKILL.md	Component reuse, page topology, content, and viewport requirements	Layout and components	compacted
+GATE-007	accessibility	skills/frontend-designer/SKILL.md	Accessibility scope and measurable acceptance criteria	Accessibility and motion	compacted
+GATE-008	performance	skills/frontend-designer/SKILL.md	Performance evidence, budgets, and delivery path	Visual treatment and performance	compacted
+GATE-009	tooling	skills/frontend-designer/SKILL.md	Installed repository tooling and approved execution environment	Tooling	compacted
+EXEC-001	inputs	skills/frontend-designer/SKILL.md	Identify the repository architecture, design source, browser matrix	Identify repository architecture, design source, browser matrix	compacted
+EXEC-002	contracts	skills/frontend-designer/SKILL.md	Define or preserve token, state, semantic HTML	preserve token, state, semantic HTML	compacted
+EXEC-003	alternatives	skills/frontend-designer/SKILL.md	Select the smallest compatible CSS, layout, component, theme, and motion approach	Select the smallest compatible CSS paradigm, layout, component, token, theme, media, and motion approach	compacted
+EXEC-004	reference-use	skills/frontend-designer/SKILL.md	Read `references/technical-reference.md`	Required Evidence Gates	integrated
+EXEC-005	validation	skills/frontend-designer/SKILL.md	State the chosen pattern, evidence, runtime risks, fallback or migration plan, and validation path	Validation output	compacted
+OUT-001	pattern-evidence	skills/frontend-designer/SKILL.md	Recommended decision, repository evidence	The recommended pattern, repository and source evidence	compacted
+OUT-002	rejected-alternatives	skills/frontend-designer/SKILL.md	Alternatives rejected with concrete tradeoffs	Rejected alternatives with concrete tradeoffs	compacted
+OUT-003	runtime-risks	skills/frontend-designer/SKILL.md	Accessibility, browser, performance, and runtime risks	Accessibility, browser, performance, security, and runtime risks	compacted
+OUT-004	validation-output	skills/frontend-designer/SKILL.md	Validation steps that are available in the repository	commands actually available and their results	compacted
+REF-001	conditional-use	skills/frontend-designer/references/technical-reference.md	Treat every architecture pattern and command below as a candidate	Gather the following before selecting a pattern	compacted
+REF-002	decision-inputs	skills/frontend-designer/references/technical-reference.md	## Decision Inputs	Required Evidence Gates	compacted
+REF-003	css-paradigm	skills/frontend-designer/references/technical-reference.md	## 1. CSS Architecture and Naming	Repository architecture and migration	compacted
+REF-004	tokens-oklch	skills/frontend-designer/references/technical-reference.md	## 2. Tokens, Color, Typography, and Themes	Tokens, color, and themes	compacted
+REF-005	components-layout	skills/frontend-designer/references/technical-reference.md	## 3. Components, Layout, and Responsive Behavior	Layout and components	compacted
+REF-006	accessibility-motion	skills/frontend-designer/references/technical-reference.md	## 4. Accessibility and Motion	Accessibility and motion	compacted
+REF-007	visual-performance	skills/frontend-designer/references/technical-reference.md	## 5. Visual Direction and Performance	Visual treatment and performance	compacted
+REF-008	local-handoff	skills/frontend-designer/references/technical-reference.md	## 6. Local Design Handoff	Design source	compacted
+REF-009	tooling	skills/frontend-designer/references/technical-reference.md	## 7. Command Availability	Tooling	compacted
+SRC-001	live-verification	skills/frontend-designer/references/source-index.md	## Verification Policy	Live Verification Rules	compacted
+SRC-002	claim-scope	skills/frontend-designer/references/source-index.md	A source URL is a starting point	A URL is a starting point	compacted
+SRC-003	verification-record	skills/frontend-designer/references/source-index.md	Record the verification date, source URL, scope, and confirmed behavior	Record verification date, source URL, scope, and confirmed behavior	compacted
+SRC-004	browser-source	skills/frontend-designer/references/source-index.md	CSS nesting	W3C CSS specifications	compacted
+SRC-005	accessibility-law	skills/frontend-designer/references/source-index.md	European Accessibility Act	official regulator	compacted
+SEC-001	security-claims	skills/frontend-designer/references/source-index.md	security	security	compacted
+OMIT-001	examples	skills/frontend-designer/references/technical-reference.md	Illustrative layer order	NOT_APPLICABLE	omitted
+OMIT-002	snippets	skills/frontend-designer/references/technical-reference.md	Example focus and motion treatment	NOT_APPLICABLE	omitted
+OMIT-003	exhaustive-tables	skills/frontend-designer/references/technical-reference.md	| Input | Why it changes the decision |	NOT_APPLICABLE	omitted
+OMIT-004	repeated-links	skills/frontend-designer/references/technical-reference.md	## Resources	NOT_APPLICABLE	omitted
